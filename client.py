@@ -52,7 +52,7 @@ def encrypt_string(message, key):
     salt = uuid.uuid4().hex
     merged = str(salt) + message
     encrypted_string = ""
-    
+
 
     encrypted_string = cipher_encrypt(merged, key)
 
@@ -60,25 +60,25 @@ def encrypt_string(message, key):
 
     return hash_string, encrypted_string
 
-message = "my name is owais"
+message = 'OwaisSultan'
 key = 3
+print("Message Before Encryption: " + message)
+print("Cipher Key Value: ", + key)
 (hash_string, encrypt_string) = encrypt_string(message, key)
-print(hash_string, encrypt_string)
+print ("Encrypted Message: " + encrypt_string)
+print("Hash Of Message: " + hash_string)
 
-serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serv.bind(('0.0.0.0', 8080))
-serv.listen(5)
-while True:
-    conn, addr = serv.accept()
-    from_client = ''
-    while True:
-        data = conn.recv(4096)
-        if not data: break
-        from_client += data
-        print("from_client", from_client)
-        # conn.send(key)
-        # conn.send(hash_string)
-        conn.send(encrypt_string)
-    conn.close()
-    print ('client disconnected')
-    exit()
+
+socket_data = str(key) + "?" + str(hash_string) + "?" + str(encrypt_string)
+print(socket_data)
+
+
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect(('0.0.0.0', 8080))
+
+client.send(socket_data)
+
+from_server = client.recv(4096)
+
+client.close()
+
